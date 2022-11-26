@@ -1,7 +1,6 @@
 const {Router} = require ('express');
-const  { default: axios }= require ('axios');
-const { json } = require('body-parser');
-
+const  { default: axios } = require ('axios');
+const { Country, Activity } = require ('../db.js')
 const countryRouter = Router();
 
 
@@ -27,11 +26,35 @@ const countryRouter = Router();
 }; 
 
 
+const cargaBD = async ()=>{
+
+    try {
+        const countries = await Country.findAll();
+        if(!countries.length){
+            const array = await getApi();
+            await Country.bulkCreate(array);
+        }
+    } catch (error) {
+        console.log(error)
+        
+    }
+
+};
+
+
+
+
+const cargodatos = async ()=>{
+    await cargaBD();
+}
+
+cargodatos();
+
+
 
 countryRouter.get('/', async (req, res)=>{
 
     const x = await getApi();
-
     res.status(200).send(x);
 })
 
